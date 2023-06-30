@@ -5,8 +5,6 @@ const commentTextElement = document.getElementById('add-form-text');
 const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
 const likebuttonElements = document.querySelectorAll('.like-button');
 
-
-
 const comments =[
     {
         name:'Глеб Фокин ',
@@ -23,7 +21,7 @@ const comments =[
         isLike: true,
         } 
     
-];
+    ];
 // счетчик лайков
 const calculLikeSum = () => {
   const likebuttons = document.querySelectorAll('.like-button');
@@ -47,6 +45,7 @@ const calculLikeSum = () => {
 
 // не активная кнопка
 const ButtonEctiv = () => {
+  
  if (commentNameElevent.value && commentTextElement.value){
   butttonWriteElement.disabled = false;
  } else {
