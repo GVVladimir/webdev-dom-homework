@@ -31,12 +31,12 @@ const calculLikeSum = () => {
        event.stopPropagation()
          const el =  likebutton.dataset.el;  
  
-         if(!comments[el].isLike){  
-          comments[el].likesNum ++;
-          comments[el].isLike = true;  
-        } else {
+         if(comments[el].isLike){  
           comments[el].likesNum --;
-          comments[el].isLike = false;
+          comments[el].isLike = false;  
+        } else {
+          comments[el].likesNum ++;
+          comments[el].isLike = true;
         }
 
      renderComments()
