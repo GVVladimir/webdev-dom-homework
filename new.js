@@ -27,8 +27,8 @@ const calculLikeSum = () => {
   const likebuttons = document.querySelectorAll('.like-button');
      
   for (const likebutton of likebuttons){
-       likebutton.addEventListener('click', () => { 
-       
+       likebutton.addEventListener('click', (event) => { 
+       event.stopPropagation()
          const el =  likebutton.dataset.el;  
  
          if(!comments[el].isLike){  
@@ -45,7 +45,7 @@ const calculLikeSum = () => {
 };
 
 // не активная кнопка
-const ButtonEctiv = () => {
+const buttonEctiv = () => {
  if (commentNameElevent.value && commentTextElement.value){
   butttonWriteElement.disabled = false;
  } else {
@@ -56,9 +56,10 @@ const ButtonEctiv = () => {
 // ответ на комметарий
    
 const answerComment = () => {
-  const textComments = document.querySelectorAll('.comment-body')
+  const textComments = document.querySelectorAll('.comment')
     for (const textComment of textComments){
     textComment.addEventListener('click', () => {
+      
       const el = textComment.dataset.el;
       commentTextElement.value = `${'>' + ' ' + comments[el].comment + '  ' + comments[el].name + ':' + '  '}`;
      
@@ -67,14 +68,14 @@ const answerComment = () => {
 }
 
 // enter вместо клика
-document.addEventListener('keyup', (e) => {
-  if ( e.key === 'Enter');  
-  butttonWriteElement.click();
-}) 
+// document.addEventListener('keyup', (e) => {
+//   if ( e.key === 'Enter');  
+//   butttonWriteElement.click();
+// }) 
 
 const renderComments = () => {
     const commentsHtml = comments.map((comment, el) => {
-        return `<li id="comment" class="comment">
+        return `<li data-el="${el}" id="comment" class="comment">
         <div class="comment-header">
           <div>${comment.name}</div>
           <div>${comment.data}</div>
@@ -96,7 +97,7 @@ const renderComments = () => {
     commentsLinkElement.innerHTML = commentsHtml;
     calculLikeSum();
     answerComment();
-    ButtonEctiv();
+    buttonEctiv();
   
 };
 
@@ -144,5 +145,5 @@ renderComments();
   commentTextElement.value = '';
 });
 
-commentNameElevent.addEventListener('input', ButtonEctiv);
-commentTextElement.addEventListener('input', ButtonEctiv);
+commentNameElevent.addEventListener('input', buttonEctiv);
+commentTextElement.addEventListener('input', buttonEctiv);
