@@ -5,8 +5,6 @@ const commentTextElement = document.getElementById('add-form-text');
 const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
 const likebuttonElements = document.querySelectorAll('.like-button');
 
-
-
 const comments =[
     {
         name:'Глеб Фокин ',
