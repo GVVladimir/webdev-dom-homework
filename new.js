@@ -13,13 +13,13 @@ const newLink = () => {
   result.then((response) => {
     const jsonResult = response.json();
     jsonResult.then((responseData) => {
-    
       comments = responseData.comments;
       renderComments();
     })
   });
 };
-newLink ()
+newLink()
+
 let comments = [
     // {
     //     name:'Глеб Фокин ',
@@ -143,7 +143,8 @@ const renderComments = () => {
     calculLikeSum();
     answerComment();
     buttonEctiv();
-    newLink();
+   
+    
     // newNameButton();
 };
 
@@ -171,12 +172,14 @@ butttonWriteElement.addEventListener('click', () => {
   }),
 }).then((response) => { 
   response.json().then((responseData) => {  
-    comments = responseData.comments; 
+    // comments = responseData.comments; 
     renderComments() 
-    
+   
   });
+  newLink()
 });
-newLink()
+
+
    
 butttonWriteElement.disabled = true;
 
