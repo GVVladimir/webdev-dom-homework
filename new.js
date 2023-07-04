@@ -5,20 +5,21 @@ const commentTextElement = document.getElementById('add-form-text');
 const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
 const likebuttonElements = document.querySelectorAll('.like-button');
 
-const result = fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
-{
-  method: "GET",
-});
-
-result.then((response) => {
-  const jsonResult = response.json();
-  jsonResult.then((responseData) => {
-   
-    comments = responseData.comments;
-    renderComments();
-  })
-});
-
+const newLink = () => {
+  const result = fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
+  {
+    method: "GET",
+  });
+  result.then((response) => {
+    const jsonResult = response.json();
+    jsonResult.then((responseData) => {
+    
+      comments = responseData.comments;
+      renderComments();
+    })
+  });
+};
+newLink ()
 let comments = [
     // {
     //     name:'Глеб Фокин ',
@@ -106,7 +107,7 @@ const answerComment = () => {
     textComment.addEventListener('click', () => {
       
       const el = textComment.dataset.el;
-      commentTextElement.value = `${'>' + ' ' + comments[el].text + '  ' + comments[el].author + ':' + '  '}`;
+      commentTextElement.value = `${'>' + ' ' + comments[el].text + '  ' + comments[el].author.name+ ':' + '  '}`;
      
     }) 
   }
@@ -123,7 +124,7 @@ const renderComments = () => {
         return `<li data-el="${el}" id="comment" class="comment">
         <div class="comment-header">
           <div>${comment.author.name}</div>
-          <div>${comment.date}</div>
+          <div>${new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8) + ' ' + new Date().toLocaleTimeString().slice(0, -3)}</div>
         </div>
         <div data-el="${el}" class="comment-body" >
           <div   class="comment-text">${comment.text}</div>
@@ -142,6 +143,7 @@ const renderComments = () => {
     calculLikeSum();
     answerComment();
     buttonEctiv();
+    newLink();
     // newNameButton();
 };
 
@@ -165,19 +167,16 @@ butttonWriteElement.addEventListener('click', () => {
   method: "POST",
   body: JSON.stringify({
     text: commentTextElement.value,
-    name:  commentNameElevent,  
+    name:  commentNameElevent.value,  
   }),
-}).then((response) => {
- 
-  response.json().then((responseData) => {
-   
-    comments = responseData.comments;
-   console.log(comments);
-  })
-  renderComments()
+}).then((response) => { 
+  response.json().then((responseData) => {  
+    comments = responseData.comments; 
+    renderComments() 
+    
+  });
 });
-   
-
+newLink()
    
 butttonWriteElement.disabled = true;
 
@@ -187,3 +186,4 @@ butttonWriteElement.disabled = true;
 
 commentNameElevent.addEventListener('input', buttonEctiv);
 commentTextElement.addEventListener('input', buttonEctiv);
+
