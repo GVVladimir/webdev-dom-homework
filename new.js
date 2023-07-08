@@ -4,21 +4,24 @@ const commentNameElevent = document.getElementById('add-form-name');
 const commentTextElement = document.getElementById('add-form-text');
 const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
 const likebuttonElements = document.querySelectorAll('.like-button');
+const commentElement = document.getElementById('add-form')
+const elementTextLoad = document.getElementById('loading')
 
-const newLink = () => {
-  const result = fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
+function newLink() {
+  return fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
   {
     method: "GET",
-  });
-  result.then((response) => {
-    const jsonResult = response.json();
-    jsonResult.then((responseData) => {
+  })
+   .then((response) => {
+    return response.json();
+   })
+   .then((responseData) => {
       comments = responseData.comments;
       renderComments();
     })
-  });
-};
+  };
 newLink()
+
 
 let comments = [
     // {
@@ -66,38 +69,38 @@ const calculLikeSum = () => {
 
 // смена названия кнопки переписать
 
-const newNameButton = () => {
-  const nameButtonElements = document.querySelectorAll('.add-form-button');
-  for (const nameButtonElement of nameButtonElements){
-    nameButtonElement.addEventListener('click', (event) => {
-      const el = nameButtonElement.dataset.namebtn;
-       event.stopPropagation()
+// const newNameButton = () => {
+//   const nameButtonElements = document.querySelectorAll('.add-form-button');
+//   for (const nameButtonElement of nameButtonElements){
+//     nameButtonElement.addEventListener('click', (event) => {
+//       const el = nameButtonElement.dataset.namebtn;
+//        event.stopPropagation()
     
-      if (comments[el].isEdit){
-        comments[el].comment = `<textarea  type="textarea" class='add-form-text data-texta=${el}' rows="4">${comments.comment}</textarea>`;
-        comments[el].isEdit = false;
-        comments[el].button = 'Cохранить'
+//       if (comments[el].isEdit){
+//         comments[el].comment = `<textarea  type="textarea" class='add-form-text data-texta=${el}' rows="4">${comments.comment}</textarea>`;
+//         comments[el].isEdit = false;
+//         comments[el].button = 'Cохранить'
 
-        } else if (comments[el].isEdit === false) {
-          comments[el].comment;
-        comments[el].isEdit = true
-        comments[el].button = 'Редактировать'
+//         } else if (comments[el].isEdit === false) {
+//           comments[el].comment;
+//         comments[el].isEdit = true
+//         comments[el].button = 'Редактировать'
         
-      }
-        renderComments();
+//       }
+//         renderComments();
       
-    })
-  }
-}
+//     })
+//   }
+// }
 
 // не активная кнопка
 const buttonEctiv = () => {
- if (commentNameElevent.value && commentTextElement.value){
-  butttonWriteElement.disabled = false;
- } else {
-  butttonWriteElement.disabled = true;
- };
- };
+    if (commentNameElevent.value && commentTextElement.value){
+    butttonWriteElement.disabled = false;
+    } else {
+    butttonWriteElement.disabled = true;
+    };
+  };
 
 // ответ на комметарий
    
@@ -114,14 +117,17 @@ const answerComment = () => {
 }
 
 // enter вместо клика
-// document.addEventListener('keyup', (e) => {
-//   if ( e.key === 'Enter');  
-//   butttonWriteElement.click();
-// }) 
+// const btnEnter = () => {
+// document.addEventListener('keyup', (event) => {
+//   if ( event.key === 'Enter');  
+//   document.querySelector('.add-form-button').click();
+// }); 
+// };
 
 const renderComments = () => {
     const commentsHtml = comments.map((comment, el) => {
-        return `<li data-el="${el}" id="comment" class="comment">
+        return `<li data-el="${el}" id="comment" class="comment" >
+        
         <div class="comment-header">
           <div>${comment.author.name}</div>
           <div>${new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8) + ' ' + new Date().toLocaleTimeString().slice(0, -3)}</div>
@@ -129,7 +135,7 @@ const renderComments = () => {
         <div data-el="${el}" class="comment-body" >
           <div   class="comment-text">${comment.text}</div>
         </div>
-        <div class="comment-footer">
+        <div class="comment-footer" >
           <div class="likes">
             <span   class="likes-counter">${comment.likes}</span>
             <button  data-el="${el}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
@@ -140,10 +146,12 @@ const renderComments = () => {
    
 
     commentsLinkElement.innerHTML = commentsHtml;
+    
+
     calculLikeSum();
     answerComment();
     buttonEctiv();
-   
+    // btnEnter();
     
     // newNameButton();
 };
@@ -151,6 +159,8 @@ const renderComments = () => {
 renderComments();
 
 butttonWriteElement.addEventListener('click', () => {
+
+  // метод trim() не отправляет при пробелах изучить
    
   //  comments.push({
   //   name:commentNameElevent.value
@@ -164,29 +174,39 @@ butttonWriteElement.addEventListener('click', () => {
   //       button: 'Редактировать'
   //  })
 
+
+//  при загрузке появляется натпись обработка
+
+  commentElement.style.display = 'none';
+  elementTextLoad.style.display = 'block';
+  // commentNameElevent.style.display = 'none'
+
    fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',{
   method: "POST",
   body: JSON.stringify({
     text: commentTextElement.value,
     name:  commentNameElevent.value,  
   }),
-}).then((response) => { 
-  response.json().then((responseData) => {  
-    // comments = responseData.comments; 
-    renderComments() 
-   
-  });
-  newLink()
-});
+})
+.then((response) => { 
+  return response.json()
+ })
+  .then(() => {  
+    return newLink()
+  })
+  .then (() => {
+    commentElement.style.display = 'flex';
+    elementTextLoad.style.display = 'none';
+    // butttonWriteElement.style.display = 'block';
+  })
+  
 
-
-   
+renderComments()
 butttonWriteElement.disabled = true;
 
   commentNameElevent.value = '';
   commentTextElement.value = '';
-});
 
+});
 commentNameElevent.addEventListener('input', buttonEctiv);
 commentTextElement.addEventListener('input', buttonEctiv);
-
