@@ -6,21 +6,29 @@ const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
 const likebuttonElements = document.querySelectorAll('.like-button');
 const commentElement = document.getElementById('add-form')
 const elementTextLoad = document.getElementById('loading')
+const textElementCount = document.getElementById('text-replacement')
+
+textElementCount.style.display = 'block'
 
 function newLink() {
+ 
   return fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
   {
     method: "GET",
-  })
+  })  
    .then((response) => {
     return response.json();
-   })
+   })  
    .then((responseData) => {
       comments = responseData.comments;
       renderComments();
     })
+    .then(() => {
+      textElementCount.style.display = 'none'
+     })
   };
 newLink()
+
 
 
 let comments = [
