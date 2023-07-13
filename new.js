@@ -8,7 +8,7 @@ const commentElement = document.getElementById('add-form')
 const elementTextLoad = document.getElementById('loading')
 const textElementCount = document.getElementById('text-replacement')
 
-textElementCount.style.display = 'block'
+textElementCount.style.display = 'block';
 
 function newLink() {
  
@@ -187,17 +187,25 @@ butttonWriteElement.addEventListener('click', () => {
 
   commentElement.style.display = 'none';
   elementTextLoad.style.display = 'block';
-  // commentNameElevent.style.display = 'none'
-
+ 
+const newPost = () => {
    fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',{
   method: "POST",
   body: JSON.stringify({
     text: commentTextElement.value,
     name:  commentNameElevent.value,  
+    forceError: true,
   }),
 })
 .then((response) => { 
-  return response.json()
+  console.log(response);
+  if (response.status === 500){
+    throw new Error ('Сервер упал')
+   
+  } else {
+    return response.json()
+  }
+ 
  })
   .then(() => {  
     return newLink()
@@ -205,15 +213,23 @@ butttonWriteElement.addEventListener('click', () => {
   .then (() => {
     commentElement.style.display = 'flex';
     elementTextLoad.style.display = 'none';
-    // butttonWriteElement.style.display = 'block';
-  })
   
-
-renderComments()
+    commentNameElevent.value = '';
+    commentTextElement.value = '';
+  })
+  .catch ((error) => {
+    commentElement.style.display = 'flex';
+    elementTextLoad.style.display = 'none';
+    butttonWriteElement.disabled = false;
+    alert ('Что-то пошло не так');
+    console.warn(error);
+    } )
+}
+newPost();
+renderComments();
 butttonWriteElement.disabled = true;
 
-  commentNameElevent.value = '';
-  commentTextElement.value = '';
+  
 
 });
 commentNameElevent.addEventListener('input', buttonEctiv);
