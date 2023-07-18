@@ -1,5 +1,7 @@
+import { getComments, postComments } from "./api.js";
+import { renderComments } from "./render.js";
+
 const butttonWriteElement = document.getElementById('add-form-button');
-const commentsLinkElement = document.getElementById('comments');
 const commentNameElevent = document.getElementById('add-form-name');
 const commentTextElement = document.getElementById('add-form-text');
 const commentLikeCounterElements = document.querySelectorAll('.likes-counter');
@@ -12,16 +14,10 @@ textElementCount.style.display = 'block';
 
 function newLink() {
  
-  return fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',
-  {
-    method: "GET",
-  })  
-   .then((response) => {
-    return response.json();
-   })  
+  getComments()
    .then((responseData) => {
       comments = responseData.comments;
-      renderComments();
+      renderComments({comments});
     })
     .then(() => {
       textElementCount.style.display = 'none'
@@ -54,26 +50,92 @@ let comments = [
 ];
 
 // счетчик лайков
-const calculLikeSum = () => {
-  const likebuttons = document.querySelectorAll('.like-button');
-     
-  for (const likebutton of likebuttons){
-       likebutton.addEventListener('click', (event) => { 
-       event.stopPropagation()
-         const el =  likebutton.dataset.el;  
- 
-         if(comments[el].isLiked){  
-          comments[el].likes --;
-          comments[el].isLiked = false;  
-        } else {
-          comments[el].likes ++;
-          comments[el].isLiked = true;
-        }
 
-     renderComments()
-       });  
-   }; 
-};
+
+
+
+// не активная кнопка
+
+const buttonEctiv = () => {
+    if (commentNameElevent.value && commentTextElement.value){
+    butttonWriteElement.disabled = false;
+    } else {
+    butttonWriteElement.disabled = true;
+    };
+  };
+
+renderComments({comments});
+
+butttonWriteElement.addEventListener('click', () => {
+
+//  при загрузки появляется натпись обработка
+
+  commentElement.style.display = 'none';
+  elementTextLoad.style.display = 'block';
+ 
+const newPost = () => {
+   postComments({
+    text:commentTextElement.value,
+    name:commentNameElevent.value
+  })
+  .then(() => {  
+    return newLink()
+  })
+  .then (() => {
+    commentElement.style.display = 'flex';
+    elementTextLoad.style.display = 'none';
+  
+    commentNameElevent.value = '';
+    commentTextElement.value = '';
+  })
+  .catch ((error) => {
+    commentElement.style.display = 'flex';
+    elementTextLoad.style.display = 'none';
+    butttonWriteElement.disabled = false;
+    alert ('Что-то пошло не так');
+    console.warn(error);
+    } )
+}
+newPost();
+renderComments({comments});
+butttonWriteElement.disabled = true;
+
+  
+
+});
+commentNameElevent.addEventListener('input', buttonEctiv);
+commentTextElement.addEventListener('input', buttonEctiv);
+
+
+// архив
+
+ //  comments.push({
+  //   name:commentNameElevent.value
+  //   .replace('<', '&lt')
+  //   .replace('>', '&gt'),
+  //       data: new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8, 10) + ' ' + new Date().toLocaleTimeString().slice(0, -3),
+  //       comment: commentTextElement.value,
+  //       likesNum: 0,
+  //       isLike: false,
+  //       isEdit: true,
+  //       button: 'Редактировать'
+  //  })
+
+
+  // метод trim() не отправляет при пробелах изучить
+
+
+
+// ответ на комметарий
+   
+
+// enter вместо клика
+// const btnEnter = () => {
+// document.addEventListener('keyup', (event) => {
+//   if ( event.key === 'Enter');  
+//   document.querySelector('.add-form-button').click();
+// }); 
+// };
 
 // смена названия кнопки переписать
 
@@ -100,137 +162,3 @@ const calculLikeSum = () => {
 //     })
 //   }
 // }
-
-// не активная кнопка
-const buttonEctiv = () => {
-    if (commentNameElevent.value && commentTextElement.value){
-    butttonWriteElement.disabled = false;
-    } else {
-    butttonWriteElement.disabled = true;
-    };
-  };
-
-// ответ на комметарий
-   
-const answerComment = () => {
-  const textComments = document.querySelectorAll('.comment')
-    for (const textComment of textComments){
-    textComment.addEventListener('click', () => {
-      
-      const el = textComment.dataset.el;
-      commentTextElement.value = `${'>' + ' ' + comments[el].text + '  ' + comments[el].author.name+ ':' + '  '}`;
-     
-    }) 
-  }
-}
-
-// enter вместо клика
-// const btnEnter = () => {
-// document.addEventListener('keyup', (event) => {
-//   if ( event.key === 'Enter');  
-//   document.querySelector('.add-form-button').click();
-// }); 
-// };
-
-const renderComments = () => {
-    const commentsHtml = comments.map((comment, el) => {
-        return `<li data-el="${el}" id="comment" class="comment" >
-        
-        <div class="comment-header">
-          <div>${comment.author.name}</div>
-          <div>${new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8) + ' ' + new Date().toLocaleTimeString().slice(0, -3)}</div>
-        </div>
-        <div data-el="${el}" class="comment-body" >
-          <div   class="comment-text">${comment.text}</div>
-        </div>
-        <div class="comment-footer" >
-          <div class="likes">
-            <span   class="likes-counter">${comment.likes}</span>
-            <button  data-el="${el}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
-          </div>
-        </div>
-      </li>`
-    }).join('');
-   
-
-    commentsLinkElement.innerHTML = commentsHtml;
-    
-
-    calculLikeSum();
-    answerComment();
-    buttonEctiv();
-    // btnEnter();
-    
-    // newNameButton();
-};
-
-renderComments();
-
-butttonWriteElement.addEventListener('click', () => {
-
-  // метод trim() не отправляет при пробелах изучить
-   
-  //  comments.push({
-  //   name:commentNameElevent.value
-  //   .replace('<', '&lt')
-  //   .replace('>', '&gt'),
-  //       data: new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8, 10) + ' ' + new Date().toLocaleTimeString().slice(0, -3),
-  //       comment: commentTextElement.value,
-  //       likesNum: 0,
-  //       isLike: false,
-  //       isEdit: true,
-  //       button: 'Редактировать'
-  //  })
-
-
-//  при загрузке появляется натпись обработка
-
-  commentElement.style.display = 'none';
-  elementTextLoad.style.display = 'block';
- 
-const newPost = () => {
-   fetch('https://wedev-api.sky.pro/api/v1/:grishaev-vladimir/comments',{
-  method: "POST",
-  body: JSON.stringify({
-    text: commentTextElement.value,
-    name:  commentNameElevent.value,  
-    forceError: true,
-  }),
-})
-.then((response) => { 
-  console.log(response);
-  if (response.status === 500){
-    throw new Error ('Сервер упал')
-   
-  } else {
-    return response.json()
-  }
- 
- })
-  .then(() => {  
-    return newLink()
-  })
-  .then (() => {
-    commentElement.style.display = 'flex';
-    elementTextLoad.style.display = 'none';
-  
-    commentNameElevent.value = '';
-    commentTextElement.value = '';
-  })
-  .catch ((error) => {
-    commentElement.style.display = 'flex';
-    elementTextLoad.style.display = 'none';
-    butttonWriteElement.disabled = false;
-    alert ('Что-то пошло не так');
-    console.warn(error);
-    } )
-}
-newPost();
-renderComments();
-butttonWriteElement.disabled = true;
-
-  
-
-});
-commentNameElevent.addEventListener('input', buttonEctiv);
-commentTextElement.addEventListener('input', buttonEctiv);
