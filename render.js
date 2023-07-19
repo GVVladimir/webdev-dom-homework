@@ -1,4 +1,5 @@
 const commentsLinkElement = document.getElementById('comments');
+const commentTextElement = document.getElementById('add-form-text');
 
 export const renderComments = ({comments}) => {
     const commentsHtml = comments.map((comment, el) => {
@@ -22,30 +23,32 @@ export const renderComments = ({comments}) => {
    
 
     commentsLinkElement.innerHTML = commentsHtml;
-    
-    const calculLikeSum = () => {
+    // счетчик лайков
+    function calculLikeSum() {
         const likebuttons = document.querySelectorAll('.like-button');
-           
-        for (const likebutton of likebuttons){
-             likebutton.addEventListener('click', (event) => { 
-             event.stopPropagation()
-               const el =  likebutton.dataset.el;  
-       
-               if(comments[el].isLiked){  
-                comments[el].likes --;
-                comments[el].isLiked = false;  
-              } else {
-                comments[el].likes ++;
-                comments[el].isLiked = true;
-              }
-      
-           renderComments({comments})
-             });  
-         }; 
-      };
+
+        for (const likebutton of likebuttons) {
+            likebutton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                const el = likebutton.dataset.el;
+
+                if (comments[el].isLiked) {
+                    comments[el].likes--;
+                    comments[el].isLiked = false;
+                } else {
+                    comments[el].likes++;
+                    comments[el].isLiked = true;
+                }
+
+                renderComments({ comments });
+            });
+        };
+    }
     calculLikeSum();
 
-    const answerComment = () => {
+
+// ответ на комметарий
+      const answerComment = () => {
         const textComments = document.querySelectorAll('.comment')
           for (const textComment of textComments){
           textComment.addEventListener('click', () => {
@@ -59,7 +62,4 @@ export const renderComments = ({comments}) => {
       
     answerComment();
    
-    // btnEnter();
-    
-    // newNameButton();
 };
