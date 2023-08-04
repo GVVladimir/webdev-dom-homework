@@ -34,6 +34,7 @@ body {
     border-radius: 20px;
   }
 
+ 
   .comments {
     display: flex;
     flex-direction: column;
@@ -52,7 +53,7 @@ body {
 
   .comment-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 
   .comment-body {
@@ -115,15 +116,24 @@ body {
     padding: 11px 22px;
   }
 
+  .logUser {
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 12px;
+  }
+
   .add-form-text {
     margin-top: 12px;
     padding: 22px;
     resize: none;
   }
 
+ 
   .add-form-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-around;
+    
   }
 
   .add-form-button {
@@ -143,5 +153,22 @@ body {
   .bord {
    outline: 3px solid red;
   }
+
+ .add-form-registration {
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+  
+ }
+ /* .registration {
+  display: none;
+ } */
+ .add-form-registration:hover {
+  text-shadow: blue 2px -2px;
+ }
+ /* .add-form-registration:active
+ .registration{
+  display: block;
+ } */
 
  

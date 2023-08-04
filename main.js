@@ -1,25 +1,30 @@
-import { getComments, postComments } from "./api.js";
+import { getComments } from "./api.js";
+import { renderLogin } from "./login.js";
 import { renderComments } from "./render.js";
 
-const butttonWriteElement = document.getElementById('add-form-button');
-const commentNameElevent = document.getElementById('add-form-name');
-const commentTextElement = document.getElementById('add-form-text');
-const commentElement = document.getElementById('add-form')
-const elementTextLoad = document.getElementById('loading')
+
+
+// const butttonWriteElement = document.getElementById('add-form-button');
+// const commentNameElevent = document.getElementById('add-form-name');
+// const commentTextElement = document.getElementById('add-form-text');
+// const commentElement = document.getElementById('add-form')
+// const elementTextLoad = document.getElementById('loading')
 const textElementCount = document.getElementById('text-replacement')
 
 textElementCount.style.display = 'block';
 
-function newLink() {
- 
-  getComments()
-   .then((responseData) => {
+export function newLink() { 
+
+  getComments().then((responseData) => {
       comments = responseData.comments;
       renderComments({comments});
-    })
+      return true;
+   })
     .then(() => {
+      renderLogin({ comments, newLink })
       textElementCount.style.display = 'none'
-     })
+   })
+     
   };
 newLink()
 
@@ -47,7 +52,10 @@ let comments = [
 
 // не активная кнопка
 
-const buttonEctiv = () => {
+export function buttonEctiv ()  {
+  const butttonWriteElement = document.getElementById('add-form-button');
+  const commentNameElevent = document.getElementById('add-form-name');
+const commentTextElement = document.getElementById('add-form-text');
     if (commentNameElevent.value && commentTextElement.value){
     butttonWriteElement.disabled = false;
     } else {
@@ -57,47 +65,10 @@ const buttonEctiv = () => {
 
   
 
-renderComments({comments});
+// renderComments({comments});
+renderLogin({ newLink });
 
-butttonWriteElement.addEventListener('click', () => {
 
-//  при загрузки появляется натпись обработка
-
-  commentElement.style.display = 'none';
-  elementTextLoad.style.display = 'block';
- 
-const newPost = () => {
-   postComments({
-    text:commentTextElement.value,
-    name:commentNameElevent.value
-  })
-  .then(() => {  
-    return newLink()
-  })
-  .then (() => {
-    commentElement.style.display = 'flex';
-    elementTextLoad.style.display = 'none';
-  
-    commentNameElevent.value = '';
-    commentTextElement.value = '';
-  })
-  .catch ((error) => {
-    commentElement.style.display = 'flex';
-    elementTextLoad.style.display = 'none';
-    butttonWriteElement.disabled = false;
-    alert ('Что-то пошло не так');
-    console.warn(error);
-    } )
-}
-newPost();
-renderComments({comments});
-butttonWriteElement.disabled = true;
-
-  
-
-});
-commentNameElevent.addEventListener('input', buttonEctiv);
-commentTextElement.addEventListener('input', buttonEctiv);
 
 
 

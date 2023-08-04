@@ -1,7 +1,11 @@
-const commentsLinkElement = document.getElementById('comments');
-const commentTextElement = document.getElementById('add-form-text');
+import { deleteComments, postComments } from "./api.js";
+import { buttonEctiv } from "./main.js";
 
-export const renderComments = ({comments}) => {
+
+
+
+export const renderComments = ({ comments }) => {
+  const appElement = document.getElementById('app');
     const commentsHtml = comments.map((comment, el) => {
         return `<li data-el="${el}" id="comment" class="comment" >
         
@@ -13,16 +17,45 @@ export const renderComments = ({comments}) => {
           <div   class="comment-text">${comment.text}</div>
         </div>
         <div class="comment-footer" >
-          <div class="likes">
+        <button class="add-form-button delete-button" id="add-form-button-delete" >Удалить</button>
+          <div class="likes">          
             <span   class="likes-counter">${comment.likes}</span>
             <button  data-el="${el}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
           </div>
         </div>
       </li>`
     }).join('');
+
+    const appHTML = `<div class="container">
+    <div id="text-replacement" style="display: none; color: white;">Подождите немного</div>
+    <ul id="comments" class="comments">${commentsHtml}
+   <!-- рендерится из js -->
+    </ul>
+    <br>
+    <div class = "loading" id="loading" style ="display:none; color:white;">Комментарий добавляется...</div>
+    <div class="add-form" id="add-form">
+      <input id="add-form-name"
+        type="text"
+        class="add-form-name"
+        placeholder="Введите ваше имя"
+      />
+      <textarea
+        type="textarea"
+        class="add-form-text"
+        placeholder="Введите ваш коментарий"
+        rows="4"
+        id="add-form-text"
+      ></textarea>
+      <div class="add-form-row">
+        <button class="add-form-button" id="add-form-button-delete">Удалить</button>
+        <button class="add-form-button" id="add-form-button">Написать</button>
+      </div>
+    </div>
+  </div>
+    `;
    
 
-    commentsLinkElement.innerHTML = commentsHtml;
+appElement.innerHTML = appHTML;
     // счетчик лайков
     function calculLikeSum() {
         const likebuttons = document.querySelectorAll('.like-button');
@@ -59,7 +92,71 @@ export const renderComments = ({comments}) => {
           }) 
         }
       }
-      
     answerComment();
+
+    const deletButtonElements = document.querySelectorAll(`.delete-button`);
+    for(const deletButtonElement of deletButtonElements){
+      deletButtonElement.addEventListener('click', (event) => {
+        event.stopPropagation();
+
+        const id = deletButtonElement.dataset.id;
+
+        deleteComments({ id }).then(() => {
+          renderComments();
+        })
+        })
+      }
+
+
+      const butttonWriteElement = document.getElementById('add-form-button');
+      const commentNameElevent = document.getElementById('add-form-name');
+      const commentTextElement = document.getElementById('add-form-text');
+      const commentElement = document.getElementById('add-form')
+      const elementTextLoad = document.getElementById('loading')
+      const commentsLinkElement = document.getElementById('comments');
    
-};
+      // const commentTextElement = document.getElementById('add-form-text');
+      // // const textElementCount = document.getElementById('text-replacement')
+      
+butttonWriteElement.addEventListener('click', () => {
+
+  //  при загрузки появляется натпись обработка
+  
+    commentElement.style.display = 'none';
+    elementTextLoad.style.display = 'block';
+   
+   const newPost = () => {
+     postComments({
+      text:commentTextElement.value,
+      name:commentNameElevent.value
+    })
+    .then(() => {  
+       return newLink()
+    })
+    .then (() => {
+      commentElement.style.display = 'flex';
+      elementTextLoad.style.display = 'none';
+    
+      commentNameElevent.value = '';
+      commentTextElement.value = '';
+    })
+    .catch ((error) => {
+      commentElement.style.display = 'flex';
+      elementTextLoad.style.display = 'none';
+      butttonWriteElement.disabled = false;
+      alert ('Что-то пошло не так');
+      console.warn(error);
+      } )
+  }
+  newPost();
+  buttonEctiv()
+  renderComments({comments});
+  
+  butttonWriteElement.disabled = true;
+
+  
+  });
+  commentNameElevent.addEventListener('input', buttonEctiv);
+  commentTextElement.addEventListener('input', buttonEctiv);
+
+    }
