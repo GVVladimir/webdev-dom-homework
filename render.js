@@ -1,15 +1,18 @@
-import { deleteComments, postComments } from "./api.js";
-import { buttonEctiv } from "./main.js";
+import { deleteComments, name, postComments } from "./api.js";
+import { buttonEctiv, newLink } from "./main.js";
+
 
 
 
 
 export const renderComments = ({ comments }) => {
+
   const appElement = document.getElementById('app');
+  
     const commentsHtml = comments.map((comment, el) => {
+     
         return `<li data-el="${el}" id="comment" class="comment" >
-        
-        <div class="comment-header">
+         <div class="comment-header">
           <div>${comment.author.name}</div>
           <div>${new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8) + ' ' + new Date().toLocaleTimeString().slice(0, -3)}</div>
         </div>
@@ -17,7 +20,7 @@ export const renderComments = ({ comments }) => {
           <div   class="comment-text">${comment.text}</div>
         </div>
         <div class="comment-footer" >
-        <button class="add-form-button delete-button" id="add-form-button-delete" >Удалить</button>
+        <button data-id="${comment.id}" class="add-form-button delete-button" id="add-form-delete" >Удалить</button>
           <div class="likes">          
             <span   class="likes-counter">${comment.likes}</span>
             <button  data-el="${el}" class="like-button ${comment.isLiked ? "-active-like" : ""}"></button>
@@ -26,19 +29,20 @@ export const renderComments = ({ comments }) => {
       </li>`
     }).join('');
 
-    const appHTML = `<div class="container">
+   
+    let appHTML = `<div class="container">
     <div id="text-replacement" style="display: none; color: white;">Подождите немного</div>
     <ul id="comments" class="comments">${commentsHtml}
    <!-- рендерится из js -->
     </ul>
     <br>
+    
     <div class = "loading" id="loading" style ="display:none; color:white;">Комментарий добавляется...</div>
     <div class="add-form" id="add-form">
       <input id="add-form-name"
-        type="text"
+        type="text" readonly
         class="add-form-name"
-        placeholder="Введите ваше имя"
-      />
+        placeholder="Введите Ваше имя" value="${name} "/>
       <textarea
         type="textarea"
         class="add-form-text"
@@ -46,17 +50,23 @@ export const renderComments = ({ comments }) => {
         rows="4"
         id="add-form-text"
       ></textarea>
+      
       <div class="add-form-row">
-        <button class="add-form-button" id="add-form-button-delete">Удалить</button>
+      
+        <button  class="add-form-button" id="add-form-button-delete">Удалить</button>
         <button class="add-form-button" id="add-form-button">Написать</button>
       </div>
     </div>
   </div>
     `;
-   
 
-appElement.innerHTML = appHTML;
+        
     // счетчик лайков
+
+
+   
+       appElement.innerHTML = appHTML;
+
     function calculLikeSum() {
         const likebuttons = document.querySelectorAll('.like-button');
 
@@ -96,31 +106,36 @@ appElement.innerHTML = appHTML;
 
     const deletButtonElements = document.querySelectorAll(`.delete-button`);
     for(const deletButtonElement of deletButtonElements){
-      deletButtonElement.addEventListener('click', (event) => {
-        event.stopPropagation();
+      deletButtonElement.addEventListener('click', (el) => {
+        el.stopPropagation();
 
         const id = deletButtonElement.dataset.id;
 
         deleteComments({ id }).then(() => {
-          renderComments();
-        })
-        })
-      }
+          // renderComments({ comments });
+          newLink();
+        });
+        });
+       
+      };
 
 
-      const butttonWriteElement = document.getElementById('add-form-button');
+      const butonWriteElement = document.getElementById('add-form-button');
       const commentNameElevent = document.getElementById('add-form-name');
       const commentTextElement = document.getElementById('add-form-text');
       const commentElement = document.getElementById('add-form')
       const elementTextLoad = document.getElementById('loading')
-      const commentsLinkElement = document.getElementById('comments');
+    
+      
    
       // const commentTextElement = document.getElementById('add-form-text');
       // // const textElementCount = document.getElementById('text-replacement')
-      
-butttonWriteElement.addEventListener('click', () => {
 
-  //  при загрузки появляется натпись обработка
+          
+      
+butonWriteElement.addEventListener('click', () => {
+
+  //  при загрузки появляется надпись обработка
   
     commentElement.style.display = 'none';
     elementTextLoad.style.display = 'block';
@@ -143,20 +158,26 @@ butttonWriteElement.addEventListener('click', () => {
     .catch ((error) => {
       commentElement.style.display = 'flex';
       elementTextLoad.style.display = 'none';
-      butttonWriteElement.disabled = false;
+      butonWriteElement.disabled = false;
       alert ('Что-то пошло не так');
       console.warn(error);
       } )
   }
   newPost();
   buttonEctiv()
-  renderComments({comments});
+  renderComments({ comments, newLink });
   
-  butttonWriteElement.disabled = true;
+  butonWriteElement.disabled = true;
 
   
+  
   });
+
   commentNameElevent.addEventListener('input', buttonEctiv);
   commentTextElement.addEventListener('input', buttonEctiv);
 
-    }
+  };
+
+    
+
+    

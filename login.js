@@ -1,10 +1,14 @@
-import { login, name, setNameUser, setToken, token } from "./api.js";
-// import { renderComments } from "./render.js";
+import { login, setNameUser, setToken } from "./api.js";
+import { newLink } from "./main.js";
+import { renderComments } from "./render.js";
 
- export const renderLogin = ({ newLink }) => {
+
+
+
+ export const renderLogin = ({ comments }) => {
     const appElement = document.getElementById('app')
     const loginHTML = `
-    <div class="container" id="enter-container">
+<div class="container" id="enter-container">
     <div id="entrance" class="add-form entrance">
         <h3 class="comment-header">Форма ввода</h3>
         <input id="input-login" class=" logUser" type="text" placeholder="Введите логин">
@@ -21,7 +25,6 @@ import { login, name, setNameUser, setToken, token } from "./api.js";
         <button class="add-form-button">Зарегистрироваться</button>
         <p class ="add-form-registration" id="add-form-registratio">Войти</p>
     </div>
-
 </div>`;
 
 appElement.innerHTML = loginHTML;
@@ -42,44 +45,45 @@ const registrtionClickElement = document.getElementById('add-form-registration')
 const entranceClickElement = document.getElementById('add-form-registratio');
 
 
-
-
 function clickRegistration() {
                
-        registrtionClickElement.addEventListener('click',() => {
-           
-                entranceElement.style.display = 'none';
-                 registrtionElement.style.display = 'flex';
-                 
-       })
-     }
-clickRegistration()
+    registrtionClickElement.addEventListener('click',() => {
+       
+            entranceElement.style.display = 'none';
+             registrtionElement.style.display = 'flex';
+             
+   })
+ }
+        clickRegistration()
 
-    function clickEntrance() {
-                
-        entranceClickElement.addEventListener('click',() => {
-        
-            entranceElement.style.display = 'flex';
-            registrtionElement.style.display = 'none';
-                
-    })
-    }
-    clickEntrance()
+function clickEntrance() {
+            
+    entranceClickElement.addEventListener('click',() => {
+    
+        entranceElement.style.display = 'flex';
+        registrtionElement.style.display = 'none';
+            
+})
+}
+clickEntrance()
+
 
     enterButton.addEventListener('click', () => {
         login({
             login: inpunLoginElement.value,
             password:inputPasswordElement.value,
         }).then((responsData) => {
-           
-        setToken(responsData.user.token);
-        console.log(token);
-        setNameUser(responsData.user.name)
-        console.log(name);
+         setToken(responsData.user.token);
+        setNameUser(responsData.user.name);
+
         })
-        .then(() => {
-            newLink();
+        .then((response) => {
+        //  newLink()
+        
+        renderComments({ comments })
+         
         })
+        
  });
- 
+
 };

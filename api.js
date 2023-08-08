@@ -1,5 +1,5 @@
 const host = `https://wedev-api.sky.pro/api/v2/:grishaev-vladimir/comments/`
-const hostDel = `https://wedev-api.sky.pro/api/v2/:grishaev-vladimir/comments/id`
+
 
 export let token;
 
@@ -27,8 +27,8 @@ export function getComments() {
 }
 
 
-export function deleteComments() {
-  return fetch(hostDel, 
+export function deleteComments({ id }) {
+  return fetch(host + id,
 {
   method: "DELETE",
   headers:{
@@ -64,7 +64,7 @@ export function postComments({text, name}) {
 }
 
 export function login({login, password}) {
-  return fetch(' https://wedev-api.sky.pro/api/user/login',{
+  return fetch('https://wedev-api.sky.pro/api/user/login',{
  method: "POST",
  body: JSON.stringify({
    login,

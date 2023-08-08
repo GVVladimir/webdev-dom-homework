@@ -166,9 +166,13 @@ body {
  .add-form-registration:hover {
   text-shadow: blue 2px -2px;
  }
- /* .add-form-registration:active
- .registration{
-  display: block;
- } */
+  .link-enter {
+  text-decoration: underline;
+  
+}
 
+.link-enter:hover {
+  cursor: pointer;
+  color: #3049ec;
+}
  
