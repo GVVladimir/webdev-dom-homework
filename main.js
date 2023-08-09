@@ -1,5 +1,5 @@
-import { getComments, name } from "./api.js";
-import { renderLogin } from "./login.js";
+import { getComments,  token } from "./api.js";
+
 import { renderComments } from "./render.js";
 import { renderStart } from "./renderOld.js";
 
@@ -35,16 +35,16 @@ export function newLink() {
 
   getComments().then((responseData) => {
       comments = responseData.comments;
-    //  renderStart({ comments })
-      // renderLogin({ comments })
-      renderComments({ comments })
+    renderStart({ comments })   
       return true;
    })
     .then(() => {
-      // renderComments({ comments })
-      // renderLogin({ comments })
-      renderStart({ comments })
-             
+      if(!token){
+        renderStart({ comments })
+      } else {
+        renderComments({ comments })
+      }
+       
       textElementCount.style.display = 'none'
    })
      
@@ -52,6 +52,11 @@ export function newLink() {
 // newLink()
 
 // не активная кнопка
+
+
+
+newLink()
+
 
 export function buttonEctiv ()  {
   const butonWriteElement = document.getElementById('add-form-button');
@@ -63,9 +68,4 @@ const commentTextElement = document.getElementById('add-form-text');
     butonWriteElement.disabled = true;
     };
   };
-
-newLink()
-
-
-
 

@@ -1,5 +1,5 @@
-import { login, setNameUser, setToken } from "./api.js";
-import { newLink } from "./main.js";
+import { login, name, setNameUser, setToken, token } from "./api.js";
+// import { newLink } from "./main.js";
 import { renderComments } from "./render.js";
 
 
@@ -74,14 +74,16 @@ clickEntrance()
             password:inputPasswordElement.value,
         }).then((responsData) => {
          setToken(responsData.user.token);
+            console.log(token);
         setNameUser(responsData.user.name);
+        console.log(name);
 
         })
-        .then((response) => {
+        .then(() => {
         //  newLink()
         
         renderComments({ comments })
-         
+        
         })
         
  });
