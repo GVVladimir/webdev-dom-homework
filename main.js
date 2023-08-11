@@ -3,7 +3,6 @@ import { getComments,  token } from "./api.js";
 import { renderComments } from "./render.js";
 import { renderStart } from "./renderOld.js";
 
-
 let comments = [
   // {
   //     name:'Глеб Фокин ',
