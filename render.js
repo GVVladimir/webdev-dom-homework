@@ -1,20 +1,21 @@
 import { deleteComments, name, postComments } from "./api.js";
 import { buttonEctiv, newLink } from "./main.js";
 
-
+import { format } from "date-fns" 
 
 
 
 export const renderComments = ({ comments }) => {
 
   const appElement = document.getElementById('app');
+  const now = new Date();
   
     const commentsHtml = comments.map((comment, el) => {
-     
+      const created_at = format(now, 'yyyy-MM-dd hh.mm.ss');
         return `<li data-el="${el}" id="comment" class="comment" >
          <div class="comment-header">
           <div>${comment.author.name}</div>
-          <div>${new Date().toLocaleDateString().slice(0, 6) + new Date().toLocaleDateString().slice(8) + ' ' + new Date().toLocaleTimeString().slice(0, -3)}</div>
+          <div>${created_at}</div>
         </div>
         <div data-el="${el}" class="comment-body" >
           <div   class="comment-text">${comment.text}</div>
